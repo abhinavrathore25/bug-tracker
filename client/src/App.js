@@ -14,11 +14,24 @@ function App() {
 
   const deleteBug = (bugId) => {
     const list = [...bugList];
-    const index = list.indexOf((bug) => {
+    console.log(list);
+    const index = list.findIndex((bug) => {
+      console.log(bug);
       return bug.id === bugId;
     });
-
+    
     list.splice(index, 1);
+
+    setBugList([...list]);
+  }
+
+  const modifyBug= (modifiedBug) => {
+    const list = [...bugList];
+    
+    list.forEach((element, index) => {
+      if(element.id === modifiedBug.id)
+        list[index] = modifiedBug;
+    })
 
     setBugList([...list]);
   }
@@ -27,6 +40,7 @@ function App() {
     <>
       <section id="siteHeader">
         <Header />
+        
       </section>
 
       <section id="bugEntry">
@@ -34,7 +48,7 @@ function App() {
       </section>
 
       <section id="bugTable">
-        <Table bugList={bugList} deleteBug={deleteBug} />
+        <Table bugList={bugList} deleteBug={deleteBug} modifyBug={modifyBug} />
       </section>
     </>
   );

@@ -67,3 +67,17 @@ button:hover {
     border-color: #000000;
     color: #4AF626;
 }
+
+table {
+    counter-reset: 0;
+  }
+  
+  table tr {
+    counter-increment: rowNumber;
+  }
+  
+  table tr #id::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+  }
