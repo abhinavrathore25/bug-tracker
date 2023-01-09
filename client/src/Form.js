@@ -141,7 +141,7 @@ const Form = ({lastItemId, addBug}) => {
                     </div>
 
                     <div className="item item-button">
-                        <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                        <button onClick={handleSubmit}>Submit</button>
                     </div>
 
                 </div>

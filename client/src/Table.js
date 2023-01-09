@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Table = ({ bugList, deleteBug, modifyBug }) => {
+const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
     const [editContent, setEditContent] = useState(false);
     const [newData, setNewData] = useState({
         id: -1,
@@ -10,6 +10,8 @@ const Table = ({ bugList, deleteBug, modifyBug }) => {
         platform: "",
         severity: ""
     });
+
+    let tableId = (bugsPerPage * (currentPage - 1)) + 1;
 
     const setEdit = (bugId) => {
         const { id, description, module, technology, platform, severity } = bugList.find(bug => bug.id === bugId);
@@ -65,7 +67,7 @@ const Table = ({ bugList, deleteBug, modifyBug }) => {
                         bugList.map(({ id, description, module, technology, platform, severity }) => {
                             return (
                                 <tr key={id} >
-                                    <td id="id"></td>
+                                    <td id="id">{tableId++}</td>
                                     {
                                         (editContent && id === newData.id) ?
                                             (
