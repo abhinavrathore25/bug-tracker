@@ -1,22 +1,11 @@
 {
-  "name": "allconcepts",
-  "version": "1.0.0",
-  "description": "",
-  "main": "./server/server.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./server/server.js",
+    "start": "node server.js",
+    "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm start\" \"npm run client\" "
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abhinavrathore25/bug-tracker.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/abhinavrathore25/bug-tracker/issues"
-  },
-  "homepage": "https://github.com/abhinavrathore25/bug-tracker#readme"
+  }
 }
