@@ -56,7 +56,7 @@ th, td, tr {
     padding: 3px;
 }
 
-th{
+.tableHeader{
     background-color: #4AF626;
     color: #000000;
 }

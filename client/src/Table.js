@@ -49,7 +49,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
         <>
             <table>
                 <thead>
-                    <tr>
+                    <tr className="tableHeader">
                         <th>Id</th>
                         <th>Description</th>
                         <th>Module</th>
