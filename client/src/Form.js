@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Form = ({lastItemId, addBug}) => {
 
@@ -10,19 +10,35 @@ const Form = ({lastItemId, addBug}) => {
         platform: "Windows",
         severity: "Medium"
     });
+
+    const [nextItemId, setNextItemId] = useState(lastItemId + 1);
     
+    useEffect(() => {
+        setFormData(prev => {
+            return {
+                ...prev,
+                id: nextItemId
+            }
+        })
+
+        setNextItemId(nextItemId + 1);
+
+    }, []);
+
     const { description, module, technology, platform, severity } = formData;
 
     const handleSubmit = (event) => {
         addBug(formData);
         setFormData({
-            id: 0,
+            id: nextItemId,
             description: "Please give a description..!",
             module: "Frontend",
             technology: "ReactJs",
             platform: "Windows",
             severity: "Medium"
         });
+
+        setNextItemId(nextItemId + 1);
         event.preventDefault();
     }
 
@@ -33,8 +49,8 @@ const Form = ({lastItemId, addBug}) => {
         setFormData((prev) => {
             return {
                 ...prev,
-                [name]: value,
-                id: lastItemId + 1
+                [name]: value
+                // id: lastItemId + 1
             }
         });
     }
@@ -42,6 +58,8 @@ const Form = ({lastItemId, addBug}) => {
     return (
         <>
             <form>
+                
+                {console.log(formData.id)}
                 <div className="grid-container">
 
                     <div className="item">
