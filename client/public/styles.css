@@ -56,6 +56,11 @@ th, td, tr {
     padding: 3px;
 }
 
+th{
+    background-color: #4AF626;
+    color: #000000;
+}
+
 button {
     border: 1px solid #4AF626;
     background-color: #000000;
