@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
+const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTypes, sortData }) => {
+
     const [editContent, setEditContent] = useState(false);
     const [newData, setNewData] = useState({
         id: -1,
@@ -10,6 +11,10 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
         platform: "",
         severity: ""
     });
+
+    // State for Sorting With Id and Module
+    const [idCurrentSort, setIdCurrentSort] = useState("default");
+    const [moduleCurrentSort, setModuleCurrentSort] = useState("default");
 
     let tableId = (bugsPerPage * (currentPage - 1)) + 1;
 
@@ -29,6 +34,11 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
     }
 
     const handleSubmit = (event) => {
+
+        const desc = newData.description;
+        let re = /^[w+]$/;
+        desc.
+
         modifyBug(newData);
         setEditContent(false);
     }
@@ -45,18 +55,63 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
         });
     }
 
+    const handleIdSort = (by) => {
+        const currentSort = idCurrentSort;
+        let nextSort = '';
+
+        if (currentSort === 'down')          
+            nextSort = 'up';
+        
+        else if (currentSort === 'up')
+        nextSort = 'default';
+        
+        else if (currentSort === 'default')
+        nextSort = 'down';
+        
+        sortData(by, currentSort);
+        setIdCurrentSort(nextSort);
+    }
+
+    const handleModuleSort = (by) => {
+        const currentSort = moduleCurrentSort;
+        let nextSort = '';
+
+        if (currentSort === 'down')          
+            nextSort = 'up';
+        
+        else if (currentSort === 'up')
+        nextSort = 'default';
+        
+        else if (currentSort === 'default')
+        nextSort = 'down';
+        
+        sortData(by, currentSort);
+        setModuleCurrentSort(nextSort);
+    }
+
     return (
         <>
             <table>
                 <thead>
-                    <tr className="tableHeader">
-                        <th>Id</th>
+                    <tr>
+                        <th>S.No.</th>
+                        <th>
+                            Id
+                            <button className="sortButton" onClick={() => handleIdSort("id")}>
+                                <i className={`fa-solid fa-${sortTypes[idCurrentSort].class}`} />
+                            </button>
+                        </th>
                         <th>Description</th>
-                        <th>Module</th>
+                        <th>
+                            Module
+                            <button className="sortButton" onClick={() => handleModuleSort("module")}>
+                                <i className={`fa-solid fa-${sortTypes[moduleCurrentSort].class}`} />
+                            </button>
+                        </th>
                         <th>Technology</th>
                         <th>Platform</th>
                         <th>Priority</th>
-                        <th>Edit</th>
+                        <th> {editContent ? "Save" : "Edit" }</th>
                         <th>Modify</th>
                     </tr>
                 </thead>
@@ -68,6 +123,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug }) => {
                             return (
                                 <tr key={id} >
                                     <td id="id">{tableId++}</td>
+                                    <td id="bugId">{id}</td>
                                     {
                                         (editContent && id === newData.id) ?
                                             (

@@ -23,7 +23,7 @@ const Form = ({lastItemId, addBug}) => {
 
         setNextItemId(nextItemId + 1);
 
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const { description, module, technology, platform, severity } = formData;
 
@@ -59,7 +59,6 @@ const Form = ({lastItemId, addBug}) => {
         <>
             <form>
                 
-                {console.log(formData.id)}
                 <div className="grid-container">
 
                     <div className="item">
