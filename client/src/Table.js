@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTypes, sortData }) => {
+const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTypes, sortData, searchBugs }) => {
 
-    const [editContent, setEditContent] = useState(false);
+    const [editContent, setEditContent] = useState(false); // Toggle Editing in Row
     const [newData, setNewData] = useState({
         id: -1,
         description: "",
@@ -10,11 +10,14 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         technology: "",
         platform: "",
         severity: ""
-    });
+    }); // State to store new data entered by user
 
     // State for Sorting With Id and Module
     const [idCurrentSort, setIdCurrentSort] = useState("default");
     const [moduleCurrentSort, setModuleCurrentSort] = useState("default");
+
+    // State for searching by description
+    const [showSearch, setShowSearch] = useState(false);
 
     let tableId = (bugsPerPage * (currentPage - 1)) + 1;
 
@@ -33,14 +36,23 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         setEditContent(true);
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = () => {
 
         const desc = newData.description;
-        let re = /^[w+]$/;
-        desc.
+        // let regex = /^([\w\.-]+)@([a-z-]{2,8}).([a-z]{2,8})(.[a-z]{2,5})?$/; // for Email
 
-        modifyBug(newData);
-        setEditContent(false);
+        // eslint-disable-next-line
+        let re = /^([\w])([\w\s\.!]+)$/; 
+
+        // Input validation through regex
+        if (re.test(desc)) {
+            modifyBug(newData);
+            setEditContent(false);
+        }
+        else{
+            const element = document.getElementById("bugDesc");
+            element.style.border = "red solid 2px";
+        }
     }
 
     const onChangeHandler = (event) => {
@@ -55,6 +67,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         });
     }
 
+    // SORTING by Id - Number
     const handleIdSort = (by) => {
         const currentSort = idCurrentSort;
         let nextSort = '';
@@ -72,6 +85,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         setIdCurrentSort(nextSort);
     }
 
+        // SORTING by Module - String
     const handleModuleSort = (by) => {
         const currentSort = moduleCurrentSort;
         let nextSort = '';
@@ -89,6 +103,29 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         setModuleCurrentSort(nextSort);
     }
 
+    // Handle Searching
+    const handleSearch = () => {
+        if (!showSearch) // showSearch == false
+            setShowSearch(true);
+        else {
+            if (searchText === "") {
+                setShowSearch(false);
+            } 
+            else {
+                searchBugs(searchText);                
+                setSearchText("");   
+                setShowSearch(false);
+            }
+
+        }
+    }
+
+    const [searchText, setSearchText] = useState("");
+
+    const searchTextHandler = (event) => {
+        setSearchText(event.target.value);
+    }
+
     return (
         <>
             <table>
@@ -97,14 +134,29 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                         <th>S.No.</th>
                         <th>
                             Id
-                            <button className="sortButton" onClick={() => handleIdSort("id")}>
+                            <button
+                                className="sortButton"
+                                onClick={() => handleIdSort("id")}>
                                 <i className={`fa-solid fa-${sortTypes[idCurrentSort].class}`} />
                             </button>
                         </th>
-                        <th>Description</th>
+
+                        <th> Description
+                            {
+                                showSearch && <input id="searchByDescription" onChange={searchTextHandler} type="text" />
+                            }
+                            <button
+                                className="sortButton"
+                                onClick={() => handleSearch()} >
+                                <i className="fa fa-search" aria-hidden="true"></i>
+                            </button>
+                        </th>
+
                         <th>
                             Module
-                            <button className="sortButton" onClick={() => handleModuleSort("module")}>
+                            <button
+                                className="sortButton"
+                                onClick={() => handleModuleSort("module")}>
                                 <i className={`fa-solid fa-${sortTypes[moduleCurrentSort].class}`} />
                             </button>
                         </th>
@@ -117,22 +169,29 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                 </thead>
 
                 <tbody>
-
                     {
                         bugList.map(({ id, description, module, technology, platform, severity }) => {
                             return (
                                 <tr key={id} >
-                                    <td id="id">{tableId++}</td>
-                                    <td id="bugId">{id}</td>
+                                    <td id="id"> {tableId++} </td>
+                                    <td id="bugId"> {id} </td>
                                     {
                                         (editContent && id === newData.id) ?
                                             (
                                                 <>
                                                     <td>
-                                                        <input type="text" name="description" value={newData.description} onChange={onChangeHandler} />
+                                                        <input
+                                                            type="text"
+                                                            name="description"
+                                                            id="bugDesc"
+                                                            value={newData.description}
+                                                            onChange={onChangeHandler} />
                                                     </td>
                                                     <td>
-                                                        <select name="module" id="module" value={newData.module}
+                                                        <select
+                                                            name="module"
+                                                            id="module"
+                                                            value={newData.module}
                                                             onChange={(event) => {
                                                                 onChangeHandler(event);
                                                             }} >
@@ -156,7 +215,10 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select name="platform" id="platform" value={newData.platform}
+                                                        <select
+                                                            name="platform"
+                                                            id="platform"
+                                                            value={newData.platform}
                                                             onChange={(event) => {
                                                                 onChangeHandler(event);
                                                             }} >
@@ -165,7 +227,10 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select name="severity" id="severity" value={newData.severity}
+                                                        <select
+                                                            name="severity"
+                                                            id="severity"
+                                                            value={newData.severity}
                                                             onChange={(event) => {
                                                                 onChangeHandler(event);
                                                             }} >
@@ -180,9 +245,13 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                                                             onClick={handleSubmit}>
                                                             Yes
                                                         </button>
-                                                        <button value={id} id="no" onClick={() => setEditContent(false)}> No </button>
+                                                        <button value={id} id="no" 
+                                                        onClick={() => setEditContent(false)}>
+                                                         No 
+                                                         </button>
                                                     </td>
-                                                    <td><button value={id} onClick={() => { deleteBug(id) }} >Delete</button></td>
+                                                    <td><button value={id} 
+                                                    onClick={() => { deleteBug(id) }} >Delete</button></td>
 
                                                 </>
                                             ) :
@@ -194,9 +263,11 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                                                     <td> {platform} </td>
                                                     <td> {severity} </td>
                                                     <td>
-                                                        <button value={id} id="edit" onClick={() => setEdit(id)}> Edit </button>
+                                                        <button value={id} id="edit" 
+                                                        onClick={() => setEdit(id)}> Edit </button>
                                                     </td>
-                                                    <td><button value={id} onClick={() => deleteBug(id)} >Delete</button></td>
+                                                    <td><button value={id} 
+                                                    onClick={() => deleteBug(id)} >Delete</button></td>
                                                 </>
                                             )
                                     }

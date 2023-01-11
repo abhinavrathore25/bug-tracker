@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-const Form = ({lastItemId, addBug}) => {
+const Form = ({ lastItemId, addBug }) => {
 
+    // State to Manage Controlled Data of Form
     const [formData, setFormData] = useState({
         id: 0,
         description: "Please give a description..!",
@@ -11,8 +12,9 @@ const Form = ({lastItemId, addBug}) => {
         severity: "Medium"
     });
 
+    // Setting id of each bug to unique value
     const [nextItemId, setNextItemId] = useState(lastItemId + 1);
-    
+
     useEffect(() => {
         setFormData(prev => {
             return {
@@ -27,7 +29,15 @@ const Form = ({lastItemId, addBug}) => {
 
     const { description, module, technology, platform, severity } = formData;
 
+    // Adding new bug when submit is clicked!
     const handleSubmit = (event) => {
+
+        // Input validation through regex
+        if(!handleNullDescription()){
+            event.preventDefault(); 
+            return;
+        }
+
         addBug(formData);
         setFormData({
             id: nextItemId,
@@ -39,9 +49,28 @@ const Form = ({lastItemId, addBug}) => {
         });
 
         setNextItemId(nextItemId + 1);
-        event.preventDefault();
+        event.preventDefault(); // Prevents page from reloading when Submit Button is Clicked
     }
 
+    const handleNullDescription = () => {
+        const desc = description;
+        const element = document.getElementById("description");
+
+        // eslint-disable-next-line
+        let re = /^([\w])([\w\s\.!]+)$/; 
+
+        if(re.test(desc)){
+            element.style.border = "#4AF626 solid 1px";
+            return true;
+        }
+        else{
+            element.style.border = "red solid 2px";
+        }
+
+        return false;
+    }
+
+    // Handling all fields of form
     const onChangeHandler = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -50,7 +79,6 @@ const Form = ({lastItemId, addBug}) => {
             return {
                 ...prev,
                 [name]: value
-                // id: lastItemId + 1
             }
         });
     }
@@ -58,15 +86,20 @@ const Form = ({lastItemId, addBug}) => {
     return (
         <>
             <form>
-                
-                <div className="grid-container">
+
+                <div className="grid-container"> 
 
                     <div className="item">
                         <label htmlFor="description">Description</label>
                     </div>
 
                     <div className="item">
-                        <textarea name="description" id="description" cols="30" rows="5" value={description}
+                        <textarea
+                            name="description"
+                            id="description"
+                            cols="30"
+                            rows="5"
+                            value={description}
                             onChange={(event) => {
                                 onChangeHandler(event);
                             }} ></textarea>
@@ -78,7 +111,10 @@ const Form = ({lastItemId, addBug}) => {
                     </div>
 
                     <div className="item">
-                        <select name="module" id="module" value={module}
+                        <select
+                            name="module"
+                            id="module"
+                            value={module}
                             onChange={(event) => {
                                 onChangeHandler(event);
                             }} >
@@ -94,7 +130,11 @@ const Form = ({lastItemId, addBug}) => {
                     </div>
 
                     <div className="item">
-                        <select size="3" name="technology" id="technology" value={technology}
+                        <select
+                            size="3"
+                            name="technology"
+                            id="technology"
+                            value={technology}
                             onChange={(event) => {
                                 onChangeHandler(event);
                             }} >
@@ -113,7 +153,11 @@ const Form = ({lastItemId, addBug}) => {
 
                     <div className="item">
                         <div className="div-label">
-                            <input type="radio" value="Windows" name="platform" checked={platform === "Windows"}
+                            <input
+                                type="radio"
+                                value="Windows"
+                                name="platform"
+                                checked={platform === "Windows"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />
@@ -121,7 +165,11 @@ const Form = ({lastItemId, addBug}) => {
                         </div>
 
                         <div className="div-label">
-                            <input type="radio" value="Mac" name="platform" checked={platform === "Mac"}
+                            <input
+                                type="radio"
+                                value="Mac"
+                                name="platform"
+                                checked={platform === "Mac"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />
@@ -135,21 +183,33 @@ const Form = ({lastItemId, addBug}) => {
 
                     <div className="item">
                         <div className="div-label">
-                            <input name="severity" type="checkbox" value="High" checked={severity === "High"}
+                            <input
+                                name="severity"
+                                type="checkbox"
+                                value="High"
+                                checked={severity === "High"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />
                             <label htmlFor="high">High</label>
                         </div>
                         <div className="div-label">
-                            <input name="severity" type="checkbox" value="Medium" checked={severity === "Medium"}
+                            <input
+                                name="severity"
+                                type="checkbox"
+                                value="Medium"
+                                checked={severity === "Medium"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />
                             <label htmlFor="medium">Medium</label>
                         </div>
                         <div className="div-label">
-                            <input name="severity" type="checkbox" value="Low" checked={severity === "Low"}
+                            <input
+                                name="severity"
+                                type="checkbox"
+                                value="Low"
+                                checked={severity === "Low"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />

@@ -9,13 +9,15 @@ function App() {
   const [bugList, setBugList] = useState([]);
   const lastItemId = bugList.length !== 0 ? bugList[bugList.length - 1].id : 0;
 
-  const [bugsPerPage, setBugsPerPage] = useState(5);
+  const [bugsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Adding New Bug => Called from Form Component
   const addBug = (newBug) => {
     setBugList([...bugList, newBug]);
   };
 
+  // Deleting Bug => Called from Table Component (Delete Button)
   const deleteBug = (bugId) => {
     const list = [...bugList];
     const index = list.findIndex((bug) => {
@@ -23,10 +25,10 @@ function App() {
     });
 
     list.splice(index, 1);
-
     setBugList([...list]);
   }
 
+  // Modifying Bug => Called from Table Component (Yes Button)
   const modifyBug = (modifiedBug) => {
     const list = [...bugList];
 
@@ -38,6 +40,7 @@ function App() {
     setBugList([...list]);
   }
 
+  // Pagination Logic - START
   const indexOfLastBug = currentPage * bugsPerPage;
   const indexOfFirstBug = indexOfLastBug - bugsPerPage;
   const currentBugs = bugList.slice(indexOfFirstBug, indexOfLastBug);
@@ -50,7 +53,9 @@ function App() {
       setCurrentPage(previousOrNext);
     }
   }
+  // Pagination Logic - END
 
+  // Sorting Logic => Called from Table Component
   const sortTypes = {
     up: {
       class: 'sort-up',
@@ -85,6 +90,17 @@ function App() {
     }
   }
 
+  // Searching Logic => Called from Table Component (Search Button in Description Header)
+  const searchBugs = (description) => {
+    const filteredBugs = bugList.filter((bug) => {
+      return bug.description.toLowerCase().includes(description.toLowerCase());
+    });
+
+    if(description)
+      setBugList(filteredBugs);
+
+  }
+
   return (
     <>
       <section id="siteHeader">
@@ -99,6 +115,7 @@ function App() {
       <section id="bugTable">
         <Table bugList={currentBugs} bugsPerPage={bugsPerPage} currentPage={currentPage}
           deleteBug={deleteBug} modifyBug={modifyBug} sortTypes={sortTypes} sortData={sortData}
+          searchBugs={searchBugs}
         />
       </section>
 

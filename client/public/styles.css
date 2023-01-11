@@ -78,6 +78,7 @@ button:hover {
 .sortButton:hover{
     background-color: #4AF626;
     color: #000;
+    border-radius: 40%;
 }
 
 #dataInput{
