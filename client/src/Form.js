@@ -5,7 +5,7 @@ const Form = ({ lastItemId, addBug }) => {
     // State to Manage Controlled Data of Form
     const [formData, setFormData] = useState({
         id: 0,
-        description: "Please give a description..!",
+        description: "",
         module: "Frontend",
         technology: "ReactJs",
         platform: "Windows",
@@ -41,7 +41,7 @@ const Form = ({ lastItemId, addBug }) => {
         addBug(formData);
         setFormData({
             id: nextItemId,
-            description: "Please give a description..!",
+            description: "",
             module: "Frontend",
             technology: "ReactJs",
             platform: "Windows",
@@ -100,6 +100,7 @@ const Form = ({ lastItemId, addBug }) => {
                             cols="30"
                             rows="5"
                             value={description}
+                            placeholder="Please give a description..!"
                             onChange={(event) => {
                                 onChangeHandler(event);
                             }} ></textarea>
