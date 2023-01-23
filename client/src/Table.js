@@ -110,6 +110,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         else {
             if (searchText === "") {
                 setShowSearch(false);
+                searchBugs(searchText);                
             } 
             else {
                 searchBugs(searchText);                

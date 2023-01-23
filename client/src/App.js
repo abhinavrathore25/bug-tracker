@@ -1,43 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Form from "./Form";
 import Header from "./Header";
 import Pagination from "./Pagination";
 import Table from "./Table";
+import axios from "axios";
 
 function App() {
 
   const [bugList, setBugList] = useState([]);
-  const lastItemId = bugList.length !== 0 ? bugList[bugList.length - 1].id : 0;
-
   const [bugsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [lastItemId, setLastItemId] = useState(0);
+
+  const URL = "http://localhost:8080";
+  let config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+  };
+
+  useEffect(() => {
+
+    if(bugList.length === 0){
+      getBugList();
+    }
+
+    axios
+    .get(`${URL}/newBugId`)
+    .then(res => setLastItemId(res.data))
+    .catch(err => console.log(err))
+    ; 
+      
+  }, [bugList]);
+
+  const getBugList = () => {
+    axios
+        .get(`${URL}/retrieveBugs`)
+        .then(res => { setBugList(res.data) })
+        .catch(err => console.log(err.message))
+        ;
+  }
 
   // Adding New Bug => Called from Form Component
   const addBug = (newBug) => {
-    setBugList([...bugList, newBug]);
+    newBug = {...newBug, id: lastItemId + 1};
+    axios.post(`${URL}/addBug`, newBug, config)
+      .then(res => setBugList([...bugList, newBug]))
+      .catch(err => console.log(err.message));
+    
   };
 
   // Deleting Bug => Called from Table Component (Delete Button)
   const deleteBug = (bugId) => {
-    const list = [...bugList];
-    const index = list.findIndex((bug) => {
-      return bug.id === bugId;
-    });
 
-    list.splice(index, 1);
-    setBugList([...list]);
+    axios.delete(`${URL}/deleteBug/${bugId}`)
+    .then(res => res.data === "Success" && getBugList())
+    .catch(err => console.log(err));
   }
 
   // Modifying Bug => Called from Table Component (Yes Button)
   const modifyBug = (modifiedBug) => {
-    const list = [...bugList];
 
-    list.forEach((element, index) => {
-      if (element.id === modifiedBug.id)
-        list[index] = modifiedBug;
-    })
+    axios
+      .patch(`${URL}/updateBug`, modifiedBug, config)
+      .then(res => res.status === 200 && getBugList())
+      .catch(err => console.log(err.message));
 
-    setBugList([...list]);
+    setBugList([]);
   }
 
   // Pagination Logic - START
@@ -49,7 +78,6 @@ function App() {
     const previousOrNext = currentPage + incrementDecrement;
 
     if (previousOrNext > 0 && previousOrNext <= end) {
-      console.log(previousOrNext);
       setCurrentPage(previousOrNext);
     }
   }
@@ -96,20 +124,20 @@ function App() {
       return bug.description.toLowerCase().includes(description.toLowerCase());
     });
 
-    if(description)
+    if (description.length !== 0)
       setBugList(filteredBugs);
-
+    else
+      getBugList();
   }
 
   return (
     <>
       <section id="siteHeader">
         <Header />
-
       </section>
 
       <section id="bugEntry">
-        <Form lastItemId={parseInt(lastItemId)} addBug={addBug} />
+        <Form addBug={addBug} />
       </section>
 
       <section id="bugTable">

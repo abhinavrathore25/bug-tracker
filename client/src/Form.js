@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-const Form = ({ lastItemId, addBug }) => {
-
+const Form = ({ addBug }) => {
+    
     // State to Manage Controlled Data of Form
     const [formData, setFormData] = useState({
         id: 0,
@@ -13,19 +13,19 @@ const Form = ({ lastItemId, addBug }) => {
     });
 
     // Setting id of each bug to unique value
-    const [nextItemId, setNextItemId] = useState(lastItemId + 1);
+    // const [nextItemId, setNextItemId] = useState(lastItemId + 1);
 
-    useEffect(() => {
-        setFormData(prev => {
-            return {
-                ...prev,
-                id: nextItemId
-            }
-        })
+    // useEffect(() => {
+    //     setFormData(prev => {
+    //         return {
+    //             ...prev,
+    //             id: nextItemId
+    //         }
+    //     })
 
-        setNextItemId(nextItemId + 1);
+    //     setNextItemId(nextItemId + 1);
 
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const { description, module, technology, platform, severity } = formData;
 
@@ -40,7 +40,7 @@ const Form = ({ lastItemId, addBug }) => {
 
         addBug(formData);
         setFormData({
-            id: nextItemId,
+            // id: nextItemId,
             description: "",
             module: "Frontend",
             technology: "ReactJs",
@@ -48,7 +48,7 @@ const Form = ({ lastItemId, addBug }) => {
             severity: "Medium"
         });
 
-        setNextItemId(nextItemId + 1);
+        // setNextItemId(nextItemId + 1);
         event.preventDefault(); // Prevents page from reloading when Submit Button is Clicked
     }
 
