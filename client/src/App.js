@@ -8,7 +8,7 @@ import axios from "axios";
 function App() {
 
   const [bugList, setBugList] = useState([]);
-  const [bugsPerPage] = useState(5);
+  const [bugsPerPage] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastItemId, setLastItemId] = useState(0);
 
