@@ -124,8 +124,10 @@ function App() {
       return bug.description.toLowerCase().includes(description.toLowerCase());
     });
 
-    if (description.length !== 0)
+    if (description.length !== 0){
+      setCurrentPage(1);
       setBugList(filteredBugs);
+    }
     else
       getBugList();
   }
