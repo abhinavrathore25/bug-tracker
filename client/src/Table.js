@@ -19,7 +19,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
     // State for searching by description
     const [showSearch, setShowSearch] = useState(false);
 
-    let tableId = (bugsPerPage * (currentPage - 1)) + 1;
+    let tableId = (bugsPerPage * (currentPage - 1)) + 1; 
 
     const setEdit = (bugId) => {
         const { id, description, module, technology, platform, severity } = bugList.find(bug => bug.id === bugId);
