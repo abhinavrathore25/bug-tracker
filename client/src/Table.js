@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTypes, sortData, searchBugs }) => {
-
     const [editContent, setEditContent] = useState(false); // Toggle Editing in Row
     const [newData, setNewData] = useState({
         id: -1,

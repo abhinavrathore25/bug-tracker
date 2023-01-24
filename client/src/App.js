@@ -75,8 +75,9 @@ function App() {
   const currentBugs = bugList.slice(indexOfFirstBug, indexOfLastBug);
 
   const paginateWithButton = (incrementDecrement, end) => {
+    
     const previousOrNext = currentPage + incrementDecrement;
-
+    
     if (previousOrNext > 0 && previousOrNext <= end) {
       setCurrentPage(previousOrNext);
     }
@@ -144,7 +145,7 @@ function App() {
     const maxPage = Math.ceil(bugList.length/bugsPerPage);
 
     if (name === "jumpToPage" && value > 0 && value <= maxPage)
-      setNewData({ ...newData, [name]: value });
+      setNewData({ ...newData, [name]: parseInt(value) });
     else if (name === "newBugsPerPage"){
       setCurrentPage(1);
       setNewData({ ...newData, [name]: value });
