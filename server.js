@@ -3,6 +3,7 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 8080;
 const Bug = require("./mongoose");
+const fakeDataGenerator = require("./fakeData");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
@@ -13,6 +14,21 @@ app.use(cors());
 app.use(bodyParser.urlencoded({
     extended: true
   }));
+  
+
+Bug.find((err, foundBugs) => {
+    if(err){
+        console.log("Error Retrieving Data");
+    }
+    else if(foundBugs.length === 0){
+        const fakeBugs = fakeDataGenerator();
+        Bug.insertMany(fakeBugs, function(err){
+            if(err){
+                console.log(err);
+            }
+        })
+    }
+});
 
 app.get("/retrieveBugs", (req ,res) => {
     Bug.find((err, foundBugs) => {
@@ -31,14 +47,13 @@ app.get("/retrieveBugs", (req ,res) => {
         if(err)
             res.send(err);
         else
-            result.length !==0 ? res.send((result[0].id).toString()) : console.log("empty");
+            result.length !==0 ? res.send((result[0].id).toString()) : res.send("0");
     });
 })
 
 .post("/addBug", (req, res) => {
 
     const requestedBug = req.body;
-    console.log(req.body);
     const newBug = new Bug(requestedBug);
     newBug.save((err) => {
         if(err){

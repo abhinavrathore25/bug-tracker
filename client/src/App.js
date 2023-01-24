@@ -8,7 +8,7 @@ import axios from "axios";
 function App() {
 
   const [bugList, setBugList] = useState([]);
-  const [bugsPerPage] = useState(50);
+  const [bugsPerPage, setBugsPerPage] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastItemId, setLastItemId] = useState(0);
 
@@ -132,6 +132,26 @@ function App() {
       getBugList();
   }
 
+  // Handling bugsPerPage and jump to page via user input
+  const [newData, setNewData] = useState({
+    newBugsPerPage : 50,
+    jumpToPage: 1
+  });
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    const maxPage = Math.ceil(bugList.length/bugsPerPage);
+
+    if (name === "jumpToPage" && value > 0 && value <= maxPage)
+      setNewData({ ...newData, [name]: value });
+    else if (name === "newBugsPerPage"){
+      setCurrentPage(1);
+      setNewData({ ...newData, [name]: value });
+    }
+
+  }
+
   return (
     <>
       <section id="siteHeader">
@@ -152,6 +172,36 @@ function App() {
       <section id="pagination">
         <Pagination bugsPerPage={bugsPerPage} totalBugs={bugList.length}
           currentPage={currentPage} paginateWithButton={paginateWithButton} />
+
+        <div style={{ "padding": "10px 0" }}>
+          <button
+            style={{ "float": "left" }}
+            onClick={() => setBugsPerPage(newData.newBugsPerPage)}>
+            Set Bugs Per Page
+          </button>
+
+          <input
+            style={{ "float": "left" }}
+            type="number"
+            name="newBugsPerPage"
+            value={newData.newBugsPerPage}
+            onChange={(event) => handleChange(event)}>
+          </input>
+
+          <button
+            style={{ "float": "right" }}
+            onClick={() => setCurrentPage(newData.jumpToPage)}> Jump To Page
+          </button>
+
+          <input
+            style={{ "float": "right" }}
+            type="number"
+            name="jumpToPage"
+            value={newData.jumpToPage}
+            onChange={(event) => handleChange(event)}>
+          </input>
+        </div>
+
       </section>
     </>
   );
