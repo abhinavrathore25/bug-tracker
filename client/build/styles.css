@@ -26,6 +26,13 @@ body{
     justify-self: center;
 }
 
+.footer-container{
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(4, auto);
+    padding: 10px 0;
+}
+
 .div-label{
     text-align: start;
 }

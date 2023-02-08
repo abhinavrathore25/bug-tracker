@@ -144,8 +144,12 @@ function App() {
     const value = event.target.value;
     const maxPage = Math.ceil(bugList.length/bugsPerPage);
 
-    if (name === "jumpToPage" && value > 0 && value <= maxPage)
-      setNewData({ ...newData, [name]: parseInt(value) });
+    if (name === "jumpToPage" && ((value > 0 && value <= maxPage) || value === "") ){
+      if(value !== "")
+        setNewData({ ...newData, [name]: parseInt(value) });
+      else
+        setNewData({ ...newData, [name]: value });
+    }
     else if (name === "newBugsPerPage"){
       setCurrentPage(1);
       setNewData({ ...newData, [name]: value });
@@ -174,15 +178,15 @@ function App() {
         <Pagination bugsPerPage={bugsPerPage} totalBugs={bugList.length}
           currentPage={currentPage} paginateWithButton={paginateWithButton} />
 
-        <div style={{ "padding": "10px 0" }}>
+        <div className="footer-container">
           <button
-            style={{ "float": "left" }}
+            style={{ "width":"200px", "justifySelf":"end" }}
             onClick={() => setBugsPerPage(newData.newBugsPerPage)}>
             Set Bugs Per Page
           </button>
 
           <input
-            style={{ "float": "left" }}
+            style={{ "width":"50px" }}
             type="number"
             name="newBugsPerPage"
             value={newData.newBugsPerPage}
@@ -190,12 +194,12 @@ function App() {
           </input>
 
           <button
-            style={{ "float": "right" }}
-            onClick={() => setCurrentPage(newData.jumpToPage)}> Jump To Page
+            style={{ "width":"200px", "justifySelf":"end" }}
+            onClick={() => newData.jumpToPage && setCurrentPage(newData.jumpToPage) }> Jump To Page
           </button>
 
           <input
-            style={{ "float": "right" }}
+            style={{ "width":"50px" }}
             type="number"
             name="jumpToPage"
             value={newData.jumpToPage}
