@@ -12,7 +12,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastItemId, setLastItemId] = useState(0);
 
-  const URL = "http://localhost:8080";
+  // const URL = "http://localhost:8080";
+  const URL = "http://localhost:3000";
   let config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
