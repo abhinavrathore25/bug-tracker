@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({
     extended: true
   }));
   
+console.log(process.env.PORT);
 
 Bug.find((err, foundBugs) => {
     if(err){
