@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
 mongoose.set('strictQuery', false);
-// mongoose.connect("mongodb+srv://abhinavrathore:Database%4025@cluster0.tw0oyrd.mongodb.net/?retryWrites=true&w=majority");
+
+const DB_URL = process.env.DB_URL;
+// mongoose.connect(DB_URL);
 
 const intialDbConnection = async () => {
     try {
-      await mongoose.connect("mongodb+srv://abhinavrathore:Database%4025@cluster0.tw0oyrd.mongodb.net/?retryWrites=true&w=majority", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
+      await mongoose.connect(DB_URL, {
+        useNewUrlParser: true
       })
-      console.log("db connected")
+      console.log("db connected");
       
     }
     catch (error) {
