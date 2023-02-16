@@ -4,18 +4,17 @@ mongoose.set('strictQuery', false);
 const DB_URL = process.env.DB_URL;
 // mongoose.connect(DB_URL);
 
-const intialDbConnection = async () => {
-    try {
-      await mongoose.connect(DB_URL, {
+const intialDbConnection = () => {
+    mongoose.connect(DB_URL, {
         useNewUrlParser: true
-      })
-      console.log("db connected");
-      
-    }
-    catch (error) {
-      console.error(error);
-    }
-  }
+    })
+        .then(conn => {
+            console.log(`db connected`);
+        })
+        .catch(err => {
+            console.log(`Error connecting to Database ${err}`);
+        })
+}
 
 intialDbConnection();
 

@@ -4,6 +4,7 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 8080;
 const Bug = require("./mongoose");
+const mongoose = require("mongoose");
 const fakeDataGenerator = require("./fakeData");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -15,22 +16,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({
     extended: true
   }));
-  
-console.log(process.env.PORT);
-
-Bug.find((err, foundBugs) => {
-    if(err){
-        console.log("Error Retrieving Data");
-    }
-    else if(foundBugs.length === 0){
-        const fakeBugs = fakeDataGenerator();
-        Bug.insertMany(fakeBugs, function(err){
-            if(err){
-                console.log(err);
-            }
-        })
-    }
-});
 
 app.get("/retrieveBugs", (req ,res) => {
     Bug.find((err, foundBugs) => {
@@ -95,4 +80,26 @@ app.get("/retrieveBugs", (req ,res) => {
 // This route serves the React app
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, "./client/build/index.html")));
 
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+mongoose.connection.once('open', () => {
+    app.emit('ready');
+});
+
+app.on('ready', function() { 
+    
+    Bug.find((err, foundBugs) => {
+        if(err){
+            console.log("Error Retrieving Data");
+        }
+        else if(foundBugs.length === 0){
+            const fakeBugs = fakeDataGenerator();
+            Bug.insertMany(fakeBugs, function(err){
+                if(err){
+                    console.log(err);
+                }
+            })
+        }
+    });
+
+    app.listen(port, () => console.log(`Server listening on port ${port}`));
+}); 
+
