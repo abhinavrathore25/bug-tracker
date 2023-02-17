@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Form from "./Form";
 import Header from "./Header";
 import Pagination from "./Pagination";
@@ -26,6 +26,14 @@ function App() {
     }
   };
 
+  const getBugList = useCallback(() => {
+    axios
+        .get(`${URL}/retrieveBugs`)
+        .then(res => { setBugList(res.data) })
+        .catch(err => console.log(err.message))
+        ;
+  },[URL]);
+  
   useEffect(() => {
 
     if(bugList.length === 0){
@@ -38,15 +46,7 @@ function App() {
     .catch(err => console.log(err))
     ; 
       
-  }, [bugList]);
-
-  const getBugList = () => {
-    axios
-        .get(`${URL}/retrieveBugs`)
-        .then(res => { setBugList(res.data) })
-        .catch(err => console.log(err.message))
-        ;
-  }
+  }, [URL, getBugList, bugList]);
 
   // Adding New Bug => Called from Form Component
   const addBug = (newBug) => {
