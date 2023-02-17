@@ -13,7 +13,6 @@ function App() {
   const [lastItemId, setLastItemId] = useState(0);
 
   let URL = window.location.hostname;
-  console.log(window.location.href);
   if(URL === "localhost"){
     URL = process.env.REACT_APP_AXIOS_URL;
   } else {
