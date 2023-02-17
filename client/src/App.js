@@ -12,7 +12,14 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastItemId, setLastItemId] = useState(0);
 
-  const URL = process.env.REACT_APP_AXIOS_URL || "http://localhost:8080";
+  let URL = "";
+  console.log(process.env.REACT_APP_AXIOS_URL);
+  if(process.env.REACT_APP_AXIOS_URL !== "http://localhost:8080"){
+    URL = "https://bugtracker.cyclic.app/"
+  } else {
+    URL = process.env.REACT_APP_AXIOS_URL;
+  }
+
   let config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
