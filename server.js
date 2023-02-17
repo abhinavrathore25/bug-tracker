@@ -24,19 +24,22 @@ app.use(bodyParser.urlencoded({
     extended: true
   }));
 
-app.get("/retrieveBugs", (req ,res) => {
-    Bug.find((err, foundBugs) => {
-        if(err){
-            res.send(err);
-            console.log(err);
-        }
-        else{
-            res.send(foundBugs);
-        }
-    });
-})
+try {
+    app.get("/retrieveBugs", (req, res) => {
+        Bug.find((err, foundBugs) => {
+            if (err) {
+                res.send(err);
+                console.log(err);
+            }
+            else {
+                res.send(foundBugs);
+            }
+        });
+    })
+}
+catch (error) { console.log(error.message) };
 
-.get("/newBugId",(req, res) => {
+  app.get("/newBugId",(req, res) => {
     Bug.find().sort("-id").limit(1).exec((err, result) => {
         if(err)
             res.send(err);
