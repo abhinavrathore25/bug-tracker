@@ -1,16 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { actionCreators } from "./redux-store";
+import { bindActionCreators } from "redux";
+import axios from "axios";
 import Form from "./Form";
 import Header from "./Header";
 import Pagination from "./Pagination";
 import Table from "./Table";
-import axios from "axios";
 
 function App() {
 
-  const [bugList, setBugList] = useState([]);
-  const [bugsPerPage, setBugsPerPage] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [lastItemId, setLastItemId] = useState(0);
+  const dispatch = useDispatch();
+
+  const {currentPage, lastItemId, bugList, bugsPerPage} = useSelector(state => state);
+  const {setCurrentPage, setLastItemId, setBugList, setBugsPerPage} = bindActionCreators(actionCreators, dispatch);
 
   let URL = window.location.hostname;
   if(URL === "localhost"){
@@ -31,7 +34,7 @@ function App() {
         .then(res => { setBugList(res.data) })
         .catch(err => console.log(err.message))
         ;
-  },[URL]);
+  },[URL, setBugList]);
   
   useEffect(() => {
 
@@ -45,7 +48,7 @@ function App() {
     .catch(err => console.log(err))
     ; 
       
-  }, [URL, getBugList, bugList]);
+  }, [URL, getBugList, bugList, setLastItemId]);
 
   // Adding New Bug => Called from Form Component
   const addBug = (newBug) => {
@@ -181,13 +184,14 @@ function App() {
       </section>
 
       <section id="pagination">
-        <Pagination bugsPerPage={bugsPerPage} totalBugs={bugList.length}
-          currentPage={currentPage} paginateWithButton={paginateWithButton} />
+        <Pagination
+          totalBugs={bugList.length}
+          paginateWithButton={paginateWithButton} />
 
         <div className="footer-container">
           <button
             style={{ "width":"200px", "justifySelf":"end" }}
-            onClick={() => setBugsPerPage(newData.newBugsPerPage)}>
+            onClick={() => {setBugsPerPage(newData.newBugsPerPage); setCurrentPage(1);}}>
             Set Bugs Per Page
           </button>
 
@@ -212,7 +216,6 @@ function App() {
             onChange={(event) => handleChange(event)}>
           </input>
         </div>
-
       </section>
     </>
   );

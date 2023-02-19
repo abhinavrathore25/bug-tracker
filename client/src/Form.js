@@ -12,21 +12,6 @@ const Form = ({ addBug }) => {
         severity: "Medium"
     });
 
-    // Setting id of each bug to unique value
-    // const [nextItemId, setNextItemId] = useState(lastItemId + 1);
-
-    // useEffect(() => {
-    //     setFormData(prev => {
-    //         return {
-    //             ...prev,
-    //             id: nextItemId
-    //         }
-    //     })
-
-    //     setNextItemId(nextItemId + 1);
-
-    // }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
     const { description, module, technology, platform, severity } = formData;
 
     // Adding new bug when submit is clicked!

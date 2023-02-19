@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionCreators } from './redux-store';
+import { bindActionCreators } from 'redux';
 
-const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTypes, sortData, searchBugs }) => {
-    const [editContent, setEditContent] = useState(false); // Toggle Editing in Row
-    const [newData, setNewData] = useState({
-        id: -1,
-        description: "",
-        module: "",
-        technology: "",
-        platform: "",
-        severity: ""
-    }); // State to store new data entered by user
+const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData, searchBugs }) => {
+
+    const dispatch = useDispatch();
+    const { currentPage, editContent, 
+        newData, idCurrentSort, 
+        moduleCurrentSort, showSearch } = useSelector(state => state);
+
+    const { setEditContent, setNewData, setIdCurrentSort, 
+        setModuleCurrentSort, setShowSearch } = bindActionCreators(actionCreators, dispatch);
+
+    // const [editContent, setEditContent] = useState(false); // Toggle Editing in Row
+    // const [newData, setNewData] = useState({
+    //     id: -1,
+    //     description: "",
+    //     module: "",
+    //     technology: "",
+    //     platform: "",
+    //     severity: ""
+    // }); // State to store new data entered by user
 
     // State for Sorting With Id and Module
-    const [idCurrentSort, setIdCurrentSort] = useState("default");
-    const [moduleCurrentSort, setModuleCurrentSort] = useState("default");
+    // const [idCurrentSort, setIdCurrentSort] = useState("default");
+    // const [moduleCurrentSort, setModuleCurrentSort] = useState("default");
+    // const [showSearch, setShowSearch] = useState(false);
 
     // State for searching by description
-    const [showSearch, setShowSearch] = useState(false);
 
-    let tableId = (bugsPerPage * (currentPage - 1)) + 1; 
+    let tableId = (bugsPerPage * (currentPage - 1)) + 1;
 
     const setEdit = (bugId) => {
         const { id, description, module, technology, platform, severity } = bugList.find(bug => bug.id === bugId);
@@ -41,14 +53,14 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         // let regex = /^([\w\.-]+)@([a-z-]{2,8}).([a-z]{2,8})(.[a-z]{2,5})?$/; // for Email
 
         // eslint-disable-next-line
-        let re = /^([\w])([\w\s\.!]+)$/; 
+        let re = /^([\w])([\w\s\.!]+)$/;
 
         // Input validation through regex
         if (re.test(desc)) {
             modifyBug(newData);
             setEditContent(false);
         }
-        else{
+        else {
             const element = document.getElementById("bugDesc");
             element.style.border = "red solid 2px";
         }
@@ -58,12 +70,14 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         const name = event.target.name;
         const value = event.target.value;
 
-        setNewData((prev) => {
-            return {
-                ...prev,
-                [name]: value
-            }
-        });
+        // setNewData((prev) => {
+        //     return {
+        //         ...prev,
+        //         [name]: value
+        //     }
+        // });
+        
+        setNewData({[name]: value});
     }
 
     // SORTING by Id - Number
@@ -71,33 +85,33 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         const currentSort = idCurrentSort;
         let nextSort = '';
 
-        if (currentSort === 'down')          
+        if (currentSort === 'down')
             nextSort = 'up';
-        
+
         else if (currentSort === 'up')
-        nextSort = 'default';
-        
+            nextSort = 'default';
+
         else if (currentSort === 'default')
-        nextSort = 'down';
-        
+            nextSort = 'down';
+
         sortData(by, currentSort);
         setIdCurrentSort(nextSort);
     }
 
-        // SORTING by Module - String
+    // SORTING by Module - String
     const handleModuleSort = (by) => {
         const currentSort = moduleCurrentSort;
         let nextSort = '';
 
-        if (currentSort === 'down')          
+        if (currentSort === 'down')
             nextSort = 'up';
-        
+
         else if (currentSort === 'up')
-        nextSort = 'default';
-        
+            nextSort = 'default';
+
         else if (currentSort === 'default')
-        nextSort = 'down';
-        
+            nextSort = 'down';
+
         sortData(by, currentSort);
         setModuleCurrentSort(nextSort);
     }
@@ -109,11 +123,11 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
         else {
             if (searchText === "") {
                 setShowSearch(false);
-                searchBugs(searchText);                
-            } 
+                searchBugs(searchText);
+            }
             else {
-                searchBugs(searchText);                
-                setSearchText("");   
+                searchBugs(searchText);
+                setSearchText("");
                 setShowSearch(false);
             }
 
@@ -163,7 +177,7 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                         <th>Technology</th>
                         <th>Platform</th>
                         <th>Priority</th>
-                        <th> {editContent ? "Save" : "Edit" }</th>
+                        <th> {editContent ? "Save" : "Edit"}</th>
                         <th>Modify</th>
                     </tr>
                 </thead>
@@ -245,13 +259,13 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                                                             onClick={handleSubmit}>
                                                             Yes
                                                         </button>
-                                                        <button value={id} id="no" 
-                                                        onClick={() => setEditContent(false)}>
-                                                         No 
-                                                         </button>
+                                                        <button value={id} id="no"
+                                                            onClick={() => setEditContent(false)}>
+                                                            No
+                                                        </button>
                                                     </td>
-                                                    <td><button value={id} 
-                                                    onClick={() => { deleteBug(id) }} >Delete</button></td>
+                                                    <td><button value={id}
+                                                        onClick={() => { deleteBug(id) }} >Delete</button></td>
 
                                                 </>
                                             ) :
@@ -263,11 +277,11 @@ const Table = ({ bugList, bugsPerPage, currentPage, deleteBug, modifyBug, sortTy
                                                     <td> {platform} </td>
                                                     <td> {severity} </td>
                                                     <td>
-                                                        <button value={id} id="edit" 
-                                                        onClick={() => setEdit(id)}> Edit </button>
+                                                        <button value={id} id="edit"
+                                                            onClick={() => setEdit(id)}> Edit </button>
                                                     </td>
-                                                    <td><button value={id} 
-                                                    onClick={() => deleteBug(id)} >Delete</button></td>
+                                                    <td><button value={id}
+                                                        onClick={() => deleteBug(id)} >Delete</button></td>
                                                 </>
                                             )
                                     }
