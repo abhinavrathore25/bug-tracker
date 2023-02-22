@@ -81,3 +81,12 @@ export const setShowSearch = (toggle) => {
         payload: toggle
     }
 }
+
+// Action for Theme
+
+export const setTheme = (theme) => {
+    return {
+        type: "THEME",
+        payload: theme
+    }
+}

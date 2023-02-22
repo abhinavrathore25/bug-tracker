@@ -7,16 +7,17 @@ import Form from "./Form";
 import Header from "./Header";
 import Pagination from "./Pagination";
 import Table from "./Table";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
 
   const dispatch = useDispatch();
 
-  const {currentPage, lastItemId, bugList, bugsPerPage} = useSelector(state => state);
-  const {setCurrentPage, setLastItemId, setBugList, setBugsPerPage} = bindActionCreators(actionCreators, dispatch);
+  const { currentPage, lastItemId, bugList, bugsPerPage } = useSelector(state => state);
+  const { setCurrentPage, setLastItemId, setBugList, setBugsPerPage } = bindActionCreators(actionCreators, dispatch);
 
   let URL = window.location.hostname;
-  if(URL === "localhost"){
+  if (URL === "localhost") {
     URL = process.env.REACT_APP_AXIOS_URL;
   } else {
     URL = "https://bugtracker.cyclic.app/"
@@ -30,41 +31,41 @@ function App() {
 
   const getBugList = useCallback(() => {
     axios
-        .get(`${URL}/retrieveBugs`)
-        .then(res => { setBugList(res.data) })
-        .catch(err => console.log(err.message))
-        ;
-  },[URL, setBugList]);
-  
+      .get(`${URL}/retrieveBugs`)
+      .then(res => { setBugList(res.data) })
+      .catch(err => console.log(err.message))
+      ;
+  }, [URL, setBugList]);
+
   useEffect(() => {
 
-    if(bugList.length === 0){
+    if (bugList.length === 0) {
       getBugList();
     }
 
     axios
-    .get(`${URL}/newBugId`)
-    .then(res => setLastItemId(res.data))
-    .catch(err => console.log(err))
-    ; 
-      
+      .get(`${URL}/newBugId`)
+      .then(res => setLastItemId(res.data))
+      .catch(err => console.log(err))
+      ;
+
   }, [URL, getBugList, bugList, setLastItemId]);
 
   // Adding New Bug => Called from Form Component
   const addBug = (newBug) => {
-    newBug = {...newBug, id: lastItemId + 1};
+    newBug = { ...newBug, id: lastItemId + 1 };
     axios.post(`${URL}/addBug`, newBug, config)
       .then(res => setBugList([...bugList, newBug]))
       .catch(err => console.log(err.message));
-    
+
   };
 
   // Deleting Bug => Called from Table Component (Delete Button)
   const deleteBug = (bugId) => {
 
     axios.delete(`${URL}/deleteBug/${bugId}`)
-    .then(res => res.data === "Success" && getBugList())
-    .catch(err => console.log(err));
+      .then(res => res.data === "Success" && getBugList())
+      .catch(err => console.log(err));
   }
 
   // Modifying Bug => Called from Table Component (Yes Button)
@@ -84,9 +85,9 @@ function App() {
   const currentBugs = bugList.slice(indexOfFirstBug, indexOfLastBug);
 
   const paginateWithButton = (incrementDecrement, end) => {
-    
+
     const previousOrNext = currentPage + incrementDecrement;
-    
+
     if (previousOrNext > 0 && previousOrNext <= end) {
       setCurrentPage(previousOrNext);
     }
@@ -134,7 +135,7 @@ function App() {
       return bug.description.toLowerCase().includes(description.toLowerCase());
     });
 
-    if (description.length !== 0){
+    if (description.length !== 0) {
       setCurrentPage(1);
       setBugList(filteredBugs);
     }
@@ -144,79 +145,86 @@ function App() {
 
   // Handling bugsPerPage and jump to page via user input
   const [newData, setNewData] = useState({
-    newBugsPerPage : 50,
-    jumpToPage: 1
+    newBugsPerPage: "",
+    jumpToPage: ""
   });
 
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    const maxPage = Math.ceil(bugList.length/bugsPerPage);
+    const maxPage = Math.ceil(bugList.length / bugsPerPage);
 
-    if (name === "jumpToPage" && ((value > 0 && value <= maxPage) || value === "") ){
-      if(value !== "")
+    if (name === "jumpToPage" && ((value > 0 && value <= maxPage) || value === "")) {
+      if (value !== "")
         setNewData({ ...newData, [name]: parseInt(value) });
       else
         setNewData({ ...newData, [name]: value });
     }
-    else if (name === "newBugsPerPage"){
+    else if (name === "newBugsPerPage" && ((value > 0 && value <= bugList.length) || value === "")) {
       setCurrentPage(1);
       setNewData({ ...newData, [name]: value });
     }
-
   }
 
   return (
     <>
-      <section id="siteHeader">
-        <Header />
-      </section>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Header />}>
 
-      <section id="bugEntry">
-        <Form addBug={addBug} />
-      </section>
+            <Route path="/form" element={
+              <Form addBug={addBug} />
+            } />
 
-      <section id="bugTable">
-        <Table bugList={currentBugs} bugsPerPage={bugsPerPage} currentPage={currentPage}
-          deleteBug={deleteBug} modifyBug={modifyBug} sortTypes={sortTypes} sortData={sortData}
-          searchBugs={searchBugs}
-        />
-      </section>
+            <Route exact path="/" element={<Navigate to="/table" />} />
+            <Route exact path="/table" element={[
+              <Table key="table" bugList={currentBugs} bugsPerPage={bugsPerPage} currentPage={currentPage}
+                deleteBug={deleteBug} modifyBug={modifyBug} sortTypes={sortTypes} sortData={sortData}
+                searchBugs={searchBugs} />
+              ,
 
-      <section id="pagination">
-        <Pagination
-          totalBugs={bugList.length}
-          paginateWithButton={paginateWithButton} />
+              <Pagination
+                key="pagination"
+                totalBugs={bugList.length}
+                paginateWithButton={paginateWithButton} />
+              ,
 
-        <div className="footer-container">
-          <button
-            style={{ "width":"200px", "justifySelf":"end" }}
-            onClick={() => {setBugsPerPage(newData.newBugsPerPage); setCurrentPage(1);}}>
-            Set Bugs Per Page
-          </button>
+              <div className="footer-container"  key="footer">
+                
+                <input
+                  type="number"
+                  name="newBugsPerPage"
+                  placeholder="# Of Bugs"
+                  value={newData.newBugsPerPage}
+                  onChange={(event) => handleChange(event)}>
+                </input>
 
-          <input
-            style={{ "width":"50px" }}
-            type="number"
-            name="newBugsPerPage"
-            value={newData.newBugsPerPage}
-            onChange={(event) => handleChange(event)}>
-          </input>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => { setBugsPerPage(newData.newBugsPerPage); setCurrentPage(1); }}>
+                  Go
+                </button>
 
-          <button
-            style={{ "width":"200px", "justifySelf":"end" }}
-            onClick={() => newData.jumpToPage && setCurrentPage(newData.jumpToPage) }> Jump To Page
-          </button>
+                <input
+                  type="number"
+                  name="jumpToPage"
+                  placeholder="Page No"
+                  value={newData.jumpToPage}
+                  onChange={(event) => handleChange(event)}>
+                </input>
 
-          <input
-            style={{ "width":"50px" }}
-            type="number"
-            name="jumpToPage"
-            value={newData.jumpToPage}
-            onChange={(event) => handleChange(event)}>
-          </input>
-        </div>
-      </section>
+                <button 
+                  className="btn btn-secondary"
+                  onClick={() => newData.jumpToPage && setCurrentPage(newData.jumpToPage)}>
+                  Go
+                </button>
+
+              </div>
+            ]
+            } />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

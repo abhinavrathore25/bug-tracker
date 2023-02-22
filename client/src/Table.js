@@ -6,27 +6,12 @@ import { bindActionCreators } from 'redux';
 const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData, searchBugs }) => {
 
     const dispatch = useDispatch();
-    const { currentPage, editContent, 
-        newData, idCurrentSort, 
+    const { currentPage, editContent,
+        newData, idCurrentSort,
         moduleCurrentSort, showSearch } = useSelector(state => state);
 
-    const { setEditContent, setNewData, setIdCurrentSort, 
+    const { setEditContent, setNewData, setIdCurrentSort,
         setModuleCurrentSort, setShowSearch } = bindActionCreators(actionCreators, dispatch);
-
-    // const [editContent, setEditContent] = useState(false); // Toggle Editing in Row
-    // const [newData, setNewData] = useState({
-    //     id: -1,
-    //     description: "",
-    //     module: "",
-    //     technology: "",
-    //     platform: "",
-    //     severity: ""
-    // }); // State to store new data entered by user
-
-    // State for Sorting With Id and Module
-    // const [idCurrentSort, setIdCurrentSort] = useState("default");
-    // const [moduleCurrentSort, setModuleCurrentSort] = useState("default");
-    // const [showSearch, setShowSearch] = useState(false);
 
     // State for searching by description
 
@@ -76,8 +61,8 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
         //         [name]: value
         //     }
         // });
-        
-        setNewData({[name]: value});
+
+        setNewData({ [name]: value });
     }
 
     // SORTING by Id - Number
@@ -141,26 +126,34 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
     }
 
     return (
-        <>
-            <table>
-                <thead>
+        <div className="table-div">
+            <table className="table table-striped table-hover">
+                <thead className="table-dark">
                     <tr>
-                        <th>S.No.</th>
+                        <th>#</th>
                         <th>
                             Id
                             <button
-                                className="sortButton"
+                                className="sortButton btn btn-outline-secondary"
                                 onClick={() => handleIdSort("id")}>
                                 <i className={`fa-solid fa-${sortTypes[idCurrentSort].class}`} />
                             </button>
                         </th>
 
-                        <th> Description
+                        <th> 
                             {
-                                showSearch && <input id="searchByDescription" onChange={searchTextHandler} type="text" />
+                                showSearch 
+                                ?
+                                <input className="form-control w-75 d-inline" 
+                                id="searchByDescription" 
+                                placeholder="Search Description"
+                                onChange={searchTextHandler} 
+                                type="text" />
+                                :
+                                "Description"
                             }
                             <button
-                                className="sortButton"
+                                className="sortButton btn btn-outline-secondary"
                                 onClick={() => handleSearch()} >
                                 <i className="fa fa-search" aria-hidden="true"></i>
                             </button>
@@ -169,7 +162,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                         <th>
                             Module
                             <button
-                                className="sortButton"
+                                className="sortButton btn btn-outline-secondary"
                                 onClick={() => handleModuleSort("module")}>
                                 <i className={`fa-solid fa-${sortTypes[moduleCurrentSort].class}`} />
                             </button>
@@ -186,7 +179,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                     {
                         bugList.map(({ id, description, module, technology, platform, severity }) => {
                             return (
-                                <tr key={id} >
+                                <tr key={id} className="table-light" >
                                     <td id="id"> {tableId++} </td>
                                     <td id="bugId"> {id} </td>
                                     {
@@ -195,6 +188,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                 <>
                                                     <td>
                                                         <input
+                                                            className="form-control"
                                                             type="text"
                                                             name="description"
                                                             id="bugDesc"
@@ -203,6 +197,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                     </td>
                                                     <td>
                                                         <select
+                                                            className="form-select"
                                                             name="module"
                                                             id="module"
                                                             value={newData.module}
@@ -216,7 +211,11 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <select name="technology" id="technology" value={newData.technology}
+                                                        <select
+                                                            className="form-select"
+                                                            name="technology"
+                                                            id="technology"
+                                                            value={newData.technology}
                                                             onChange={(event) => {
                                                                 onChangeHandler(event);
                                                             }} >
@@ -230,6 +229,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                     </td>
                                                     <td>
                                                         <select
+                                                            className="form-select"
                                                             name="platform"
                                                             id="platform"
                                                             value={newData.platform}
@@ -242,6 +242,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                     </td>
                                                     <td>
                                                         <select
+                                                            className="form-select"
                                                             name="severity"
                                                             id="severity"
                                                             value={newData.severity}
@@ -257,15 +258,17 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                         <button
                                                             value={id} id="yes"
                                                             onClick={handleSubmit}>
-                                                            Yes
+                                                            <i className="fa-regular fa-circle-check fa-lg"></i>
                                                         </button>
                                                         <button value={id} id="no"
                                                             onClick={() => setEditContent(false)}>
-                                                            No
+                                                            <i className="fa-regular fa-circle-xmark fa-lg"></i>
                                                         </button>
                                                     </td>
-                                                    <td><button value={id}
-                                                        onClick={() => { deleteBug(id) }} >Delete</button></td>
+                                                    <td><button value={id} id="delete"
+                                                        onClick={() => { deleteBug(id) }} >
+                                                        <i className="fa-regular fa-trash-can fa-lg"></i>
+                                                    </button></td>
 
                                                 </>
                                             ) :
@@ -278,10 +281,14 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
                                                     <td> {severity} </td>
                                                     <td>
                                                         <button value={id} id="edit"
-                                                            onClick={() => setEdit(id)}> Edit </button>
+                                                            onClick={() => setEdit(id)}>
+                                                            <i className="fa fa-thin fa-pencil  fa-lg"></i>
+                                                        </button>
                                                     </td>
-                                                    <td><button value={id}
-                                                        onClick={() => deleteBug(id)} >Delete</button></td>
+                                                    <td><button value={id} id="delete"
+                                                        onClick={() => deleteBug(id)} >
+                                                        <i className="fa-regular fa-trash-can  fa-lg"></i>
+                                                    </button></td>
                                                 </>
                                             )
                                     }
@@ -292,7 +299,7 @@ const Table = ({ bugList, bugsPerPage, deleteBug, modifyBug, sortTypes, sortData
 
                 </tbody>
             </table>
-        </>
+        </div>
     )
 }
 

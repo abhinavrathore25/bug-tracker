@@ -1,4 +1,4 @@
-export const bugsPerPageReducer = (state = 5, action) => {
+export const bugsPerPageReducer = (state = 10, action) => {
     switch(action.type) {
         case "NUMBER OF BUGS":
             return state = action.payload;

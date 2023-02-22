@@ -8,6 +8,7 @@ import { formDataReducer } from './formDataReducer';
 import { idSortReducer } from './idSortReducer';
 import { moduleSortReducer } from './moduleSortReducer';
 import { showSearchReducer } from './showSearchReducer';
+import { themeReducer } from './themeReducer';
 
 const reducers = combineReducers({
     currentPage: pageReducer,
@@ -18,7 +19,8 @@ const reducers = combineReducers({
     newData: formDataReducer,
     moduleCurrentSort: moduleSortReducer,
     idCurrentSort: idSortReducer,
-    showSearch: showSearchReducer
+    showSearch: showSearchReducer,
+    theme: themeReducer
 });
 
 export default reducers;

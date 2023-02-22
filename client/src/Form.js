@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Form = ({ addBug }) => {
     
@@ -13,6 +14,7 @@ const Form = ({ addBug }) => {
     });
 
     const { description, module, technology, platform, severity } = formData;
+    const {theme} = useSelector(state => state);
 
     // Adding new bug when submit is clicked!
     const handleSubmit = (event) => {
@@ -60,6 +62,9 @@ const Form = ({ addBug }) => {
         const name = event.target.name;
         const value = event.target.value;
 
+        if(name === "description")
+            handleNullDescription();
+
         setFormData((prev) => {
             return {
                 ...prev,
@@ -70,8 +75,7 @@ const Form = ({ addBug }) => {
 
     return (
         <>
-            <form>
-
+            <form className={`form-${theme}`}>
                 <div className="grid-container"> 
 
                     <div className="item">
@@ -82,6 +86,7 @@ const Form = ({ addBug }) => {
                         <textarea
                             name="description"
                             id="description"
+                            className="form-control"
                             cols="30"
                             rows="5"
                             value={description}
@@ -100,6 +105,7 @@ const Form = ({ addBug }) => {
                         <select
                             name="module"
                             id="module"
+                            className="form-select"
                             value={module}
                             onChange={(event) => {
                                 onChangeHandler(event);
@@ -120,6 +126,7 @@ const Form = ({ addBug }) => {
                             size="3"
                             name="technology"
                             id="technology"
+                            className="form-select"
                             value={technology}
                             onChange={(event) => {
                                 onChangeHandler(event);
@@ -138,11 +145,12 @@ const Form = ({ addBug }) => {
                     </div>
 
                     <div className="item">
-                        <div className="div-label">
+                        <div className="div-label form-check">
                             <input
                                 type="radio"
                                 value="Windows"
                                 name="platform"
+                                className="form-check-input"
                                 checked={platform === "Windows"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
@@ -150,11 +158,12 @@ const Form = ({ addBug }) => {
                             <label htmlFor="windows">Windows</label>
                         </div>
 
-                        <div className="div-label">
+                        <div className="div-label form-check">
                             <input
                                 type="radio"
                                 value="Mac"
                                 name="platform"
+                                className="form-check-input"
                                 checked={platform === "Mac"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
@@ -168,33 +177,36 @@ const Form = ({ addBug }) => {
                     </div>
 
                     <div className="item">
-                        <div className="div-label">
+                        <div className="div-label form-check">
                             <input
                                 name="severity"
                                 type="checkbox"
                                 value="High"
+                                className="form-check-input"
                                 checked={severity === "High"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />
                             <label htmlFor="high">High</label>
                         </div>
-                        <div className="div-label">
+                        <div className="div-label form-check">
                             <input
                                 name="severity"
                                 type="checkbox"
                                 value="Medium"
+                                className="form-check-input"
                                 checked={severity === "Medium"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
                                 }} />
                             <label htmlFor="medium">Medium</label>
                         </div>
-                        <div className="div-label">
+                        <div className="div-label form-check">
                             <input
                                 name="severity"
                                 type="checkbox"
                                 value="Low"
+                                className="form-check-input"
                                 checked={severity === "Low"}
                                 onChange={(event) => {
                                     onChangeHandler(event);
@@ -203,10 +215,9 @@ const Form = ({ addBug }) => {
                         </div>
                     </div>
 
-                    <div className="item item-button">
-                        <button onClick={handleSubmit}>Submit</button>
+                    <div className="form-button">
+                        <button onClick={handleSubmit} className="btn btn-secondary">SUBMIT</button>
                     </div>
-
                 </div>
             </form>
         </>
