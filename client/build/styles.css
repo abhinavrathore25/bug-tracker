@@ -113,12 +113,20 @@ select:active select:hover{
 
 .table-div {
     width: 100vw;
+    height: 505px;
     max-width: 100%;
     margin-top: 50px;
     padding: 10px;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.table-div::-webkit-scrollbar {
+    display: none;
+  }
 
 .table-light {
     background-color: #FFF !important;
@@ -166,7 +174,7 @@ button#delete:hover {
 /* PAGINATION COMPONENT */
 
 #pagination {
-    margin: 20px;
+    margin: 15px;
     text-align: center;
 }
 
